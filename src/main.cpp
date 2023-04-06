@@ -1,6 +1,6 @@
 #include <ELECHOUSE_CC1101_SRC_DRV.h>
 #include <WiFiClient.h>
-// #include <AsyncElegantOTA.h>
+#include <AsyncElegantOTA.h>
 #include <ESP32-targz.h>
 #include <EEPROM.h>
 #include "SPI.h"
@@ -11,13 +11,8 @@
 #include <ESPAsyncTCP.h>
 #define RECEIVE_ATTR IRAM_ATTR
 
-#define eepromsize 4096
-#define samplesize 2000
-
-#define SD_SCLK 18
-#define SD_MISO 19
-#define SD_MOSI 23
-#define SD_SS   22
+#define eepromsize 256
+#define samplesize 1500 // 2000 in original crow
 
 #define FILE_APPEND "a"
 #define SD LittleFS
@@ -1159,7 +1154,7 @@ void setup() {
     }
   });
 
-  // AsyncElegantOTA.begin(&controlserver);
+  AsyncElegantOTA.begin(&controlserver);
   controlserver.begin();
 
   ELECHOUSE_cc1101.addSpiPin(14, 12, 13, 5, 0);
