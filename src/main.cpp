@@ -34,15 +34,14 @@ const String HTML_CSS_STYLING = "<html><head><meta charset=\"utf-8\"><title>Evil
 int push1 = 34;
 int push2 = 35;
 
-int led = 32;
 static unsigned long Blinktime = 0;
 
 int error_toleranz = 200;
 
-int RXPin = 26;
-int RXPin0 = 4;
-int TXPin0 = 2;
-int Gdo0 = 25;
+int RXPin = D2;
+//int TXPin = D1;
+int RXPin0 = D4;
+int TXPin0 = D3;
 const int minsample = 30;
 unsigned long sample[samplesize];
 unsigned long samplesmooth[samplesize];
@@ -490,9 +489,9 @@ void sendSignalsBT2() {
 
 void led_blink(int blinkrep,int blinktimer){
   for (int i = 0; i<blinkrep; i++){
-    digitalWrite(led, HIGH);
+    digitalWrite(BUILTIN_LED, HIGH);
     delay(blinktimer);
-    digitalWrite(led, LOW);
+    digitalWrite(BUILTIN_LED, LOW);
     delay(blinktimer);
   }
 }
@@ -511,7 +510,7 @@ void power_management(){
   EEPROM.begin(eepromsize);
 
   pinMode(push2, INPUT);
-  pinMode(led, OUTPUT);
+  pinMode(BUILTIN_LED, OUTPUT);
 
   byte z = EEPROM.read(eepromsize-2);
   if (digitalRead(push2) != LOW){
@@ -532,10 +531,10 @@ void power_management(){
 
 void poweron_blink(){
   if (millis()-Blinktime > 10000){
-    digitalWrite(led, LOW);
+    digitalWrite(BUILTIN_LED, LOW);
   }
   if (millis()-Blinktime > 10100){
-    digitalWrite(led, HIGH);
+    digitalWrite(BUILTIN_LED, HIGH);
     Blinktime = millis();
   }
 }
@@ -547,7 +546,7 @@ void force_reset() {
 
 void setup() {
 
-  Serial.begin(38400);
+  Serial.begin(115200);
   power_management();
 
   SPIFFS.begin();
@@ -1157,8 +1156,8 @@ void setup() {
   AsyncElegantOTA.begin(&controlserver);
   controlserver.begin();
 
-  ELECHOUSE_cc1101.addSpiPin(14, 12, 13, 5, 0);
-  ELECHOUSE_cc1101.addSpiPin(14, 12, 13, 27, 1);
+  ELECHOUSE_cc1101.addSpiPin(SCK, MISO, MOSI, SS, 0);
+  // ELECHOUSE_cc1101.addSpiPin(SCK, MISO, MOSI, D0, 1);
   appendFile(SD, "/logs.txt","Viewlog:\n", "<br>\n");
 }
 
